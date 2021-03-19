@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { colors } from '../services/global-style';
-import { WarningContext } from '../contexts/WarningContext';
+import { hideWarning } from '../actions/warningActions';
 
 const WarningMain = styled.div`
     position: absolute;
@@ -34,17 +35,19 @@ const WarningButton = styled.button`
     }
 `;
 
-const Warning = () => {
-    const { warningVisible, setWarningVisible } = useContext(WarningContext);
-    
+const Warning = ({ warningVisible, dispatch }) => {    
     return warningVisible ? (
         <WarningMain>
             <div data-type="warning-message">
                 You need to wait for 5 seconds before sending a duplicate transaction.
             </div>
-            <WarningButton onClick={() => setWarningVisible(false)}>GOT IT</WarningButton>
+            <WarningButton onClick={() => dispatch(hideWarning())}>GOT IT</WarningButton>
         </WarningMain>
     ) : null;
 };
 
-export default Warning;
+const mapStateToProps = state => ({
+    warningVisible: state.warningVisible
+})
+
+export default connect(mapStateToProps)(Warning);

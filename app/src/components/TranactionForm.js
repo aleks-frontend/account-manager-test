@@ -1,12 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
 import { isValidUUID } from '../services/helpers';
 import { colors, borderRadius } from '../services/global-style';
 import API from '../services/API';
-import { TransactionHistoryContext } from '../contexts/TransactionHistoryContext';
-import { WarningContext } from '../contexts/WarningContext';
+
+// Importing action creators
+import { showWarning, hideWarning } from '../actions/warningActions';
+import { addTransactionHistoryItem } from '../actions/transactionHistoryActions';
 
 const TransactionFormMain = styled.form`
     margin: 0 0 40px;
@@ -66,7 +69,7 @@ const TransactionFormGenerateButton = styled.button`
     &:hover { cursor: pointer; }
 `;
 
-const TransactionForm = () => {
+const TransactionForm = ({ dispatch }) => {
     const initialInputData = {
         account_id: '',
         amount: '',
@@ -81,9 +84,6 @@ const TransactionForm = () => {
     });
 
     // Grabbing data from Context
-    const { addTransactionHistoryItem } = useContext(TransactionHistoryContext);
-    const { setWarningVisible } = useContext(WarningContext);
-
     const handleInputChange = e => {
         const { name, value } = e.target;
         setInputData({
@@ -109,7 +109,7 @@ const TransactionForm = () => {
 
             if (isTooFast && isDuplicate) {
                 resetForm();
-                return setWarningVisible(true);
+                return dispatch(showWarning());
             }
         }
 
@@ -166,10 +166,10 @@ const TransactionForm = () => {
                 // to the 'lastTransactionData' state
                 API.get(`balance/${account_id}`)
                     .then((result) => {
-                        addTransactionHistoryItem({
+                        dispatch(addTransactionHistoryItem({
                             id: transaction_id, 
                             currentBalance: result['balance'],                             
-                        });  
+                        }));  
                         
                         setLastTransactionData({
                             timeStamp: new Date().getTime(), 
@@ -177,7 +177,7 @@ const TransactionForm = () => {
                             amount
                         });
 
-                        setWarningVisible(false);
+                        dispatch(hideWarning());
                     })
                     .catch((err) => {
                         console.log(err)
@@ -230,4 +230,4 @@ const TransactionForm = () => {
     );
 };
 
-export default TransactionForm;
+export default connect(null)(TransactionForm);

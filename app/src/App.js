@@ -5,6 +5,8 @@ import Header from './components/Header';
 import TranactionForm from './components/TranactionForm';
 import Container from './components/transactions-history/Container';
 import Warning from './components/Warning';
+import TransactionHistoryContextProvider from './contexts/TransactionHistoryContext';
+import WarningContextProvider from './contexts/WarningContext';
 
 const AppMain = styled.div`
   display: flex;
@@ -15,26 +17,17 @@ const AppMain = styled.div`
 `;
 
 const App = () => {
-  const [transactionHistory, setTransactionHistory] = React.useState([]);
-  const [warningVisible, setWarningVisible] = React.useState(false);
-  
-  const addTransactionHistoryItem = ({id, currentBalance }) => {
-    setTransactionHistory([
-      ...transactionHistory,
-      { id, currentBalance }
-    ])
-  };
-
   return (
     <AppMain>
       <Header />
-      <TranactionForm 
-        addTransactionHistoryItem={addTransactionHistoryItem} 
-        setWarningVisible={setWarningVisible}
-        />
-      <Container transactionHistory={transactionHistory} />
-      {warningVisible && <Warning hideWarning={() => setWarningVisible(false)} />}
-    </AppMain>
+      <WarningContextProvider>
+        <TransactionHistoryContextProvider>
+          <TranactionForm />
+          <Container />
+        </TransactionHistoryContextProvider>
+        <Warning />
+      </WarningContextProvider>
+    </AppMain >
   );
 }
 

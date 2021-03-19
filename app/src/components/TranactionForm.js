@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 import { isValidUUID } from '../services/helpers';
 import { colors, borderRadius } from '../services/global-style';
 import API from '../services/API';
+import { TransactionHistoryContext } from '../contexts/TransactionHistoryContext';
+import { WarningContext } from '../contexts/WarningContext';
 
 const TransactionFormMain = styled.form`
     margin: 0 0 40px;
@@ -65,18 +66,23 @@ const TransactionFormGenerateButton = styled.button`
     &:hover { cursor: pointer; }
 `;
 
-const TransactionForm = ({ addTransactionHistoryItem, setWarningVisible }) => {
+const TransactionForm = () => {
     const initialInputData = {
         account_id: '',
         amount: '',
     };
 
+    // Setting up local states
     const [inputData, setInputData] = React.useState(initialInputData);
     const [lastTransactionData, setLastTransactionData] = React.useState({});
     const [invalidInputs, setInvalidInputs] = React.useState({
         account_id: false,
         amount: false
     });
+
+    // Grabbing data from Context
+    const { addTransactionHistoryItem } = useContext(TransactionHistoryContext);
+    const { setWarningVisible } = useContext(WarningContext);
 
     const handleInputChange = e => {
         const { name, value } = e.target;
@@ -86,6 +92,7 @@ const TransactionForm = ({ addTransactionHistoryItem, setWarningVisible }) => {
         })
     };
 
+    // Event handlers
     const handleFormSubmit = async (e) => {
         e.preventDefault();
 
@@ -221,11 +228,6 @@ const TransactionForm = ({ addTransactionHistoryItem, setWarningVisible }) => {
             </TransactionFormMain>
         </TransactionFormWrapper>
     );
-};
-
-TransactionForm.propTypes = {
-    addTransactionHistoryItem: PropTypes.func.isRequired,
-    setWarningVisible: PropTypes.func.isRequired
 };
 
 export default TransactionForm;

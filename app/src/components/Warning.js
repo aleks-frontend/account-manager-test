@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 import { colors } from '../services/global-style';
+import { WarningContext } from '../contexts/WarningContext';
 
 const WarningMain = styled.div`
     position: absolute;
@@ -34,19 +34,17 @@ const WarningButton = styled.button`
     }
 `;
 
-const Warning = ({ hideWarning }) => {
-    return (
-        <WarningMain onClick={(e) => e.stopPropagation()}>
+const Warning = () => {
+    const { warningVisible, setWarningVisible } = useContext(WarningContext);
+    
+    return warningVisible ? (
+        <WarningMain>
             <div data-type="warning-message">
                 You need to wait for 5 seconds before sending a duplicate transaction.
-                </div>
-            <WarningButton onClick={hideWarning}>GOT IT</WarningButton>
+            </div>
+            <WarningButton onClick={() => setWarningVisible(false)}>GOT IT</WarningButton>
         </WarningMain>
-    );
-};
-
-Warning.propTypes = {
-    hideWarning: PropTypes.func.isRequired
+    ) : null;
 };
 
 export default Warning;

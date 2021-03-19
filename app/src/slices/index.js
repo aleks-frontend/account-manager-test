@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import warningReducer from './warningReducer';
-import transactionHistoryReducer from './transactionHistoryReducer';
+import warningReducer from './warningVisible';
+import transactionHistoryReducer from './transactionHistory';
 
 const rootReducer = combineReducers({
    warningVisible: warningReducer,

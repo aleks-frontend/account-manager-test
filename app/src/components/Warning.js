@@ -1,9 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { colors } from '../services/global-style';
-import { hideWarning } from '../actions/warningActions';
+import { warningVisibleSelector, hideWarning } from '../slices/warningVisible';
 
 const WarningMain = styled.div`
     position: absolute;
@@ -35,7 +35,10 @@ const WarningButton = styled.button`
     }
 `;
 
-const Warning = ({ warningVisible, dispatch }) => {    
+const Warning = () => {    
+    const dispatch = useDispatch();
+    const { warningVisible } = useSelector(warningVisibleSelector);
+
     return warningVisible ? (
         <WarningMain>
             <div data-type="warning-message">
@@ -46,8 +49,4 @@ const Warning = ({ warningVisible, dispatch }) => {
     ) : null;
 };
 
-const mapStateToProps = state => ({
-    warningVisible: state.warningVisible
-})
-
-export default connect(mapStateToProps)(Warning);
+export default Warning;

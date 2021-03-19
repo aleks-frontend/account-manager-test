@@ -1,15 +1,15 @@
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { isValidUUID } from '../services/helpers';
 import { colors, borderRadius } from '../services/global-style';
 import API from '../services/API';
 
 // Importing action creators
-import { showWarning, hideWarning } from '../actions/warningActions';
-import { addTransactionHistoryItem } from '../actions/transactionHistoryActions';
+import { showWarning, hideWarning } from '../slices/warningVisible';
+import { addTransactionHistoryItem } from '../slices/transactionHistory';
 
 const TransactionFormMain = styled.form`
     margin: 0 0 40px;
@@ -69,7 +69,9 @@ const TransactionFormGenerateButton = styled.button`
     &:hover { cursor: pointer; }
 `;
 
-const TransactionForm = ({ dispatch }) => {
+const TransactionForm = () => {
+    const dispatch = useDispatch();
+    
     const initialInputData = {
         account_id: '',
         amount: '',
@@ -230,4 +232,4 @@ const TransactionForm = ({ dispatch }) => {
     );
 };
 
-export default connect(null)(TransactionForm);
+export default TransactionForm;
